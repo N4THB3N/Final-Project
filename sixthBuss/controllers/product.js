@@ -10,7 +10,7 @@ function saveProduct(req, res){
         product.name = params.name;
         product.stock = params.stock;
         product.price = params.price;
-        product.category = params.category;
+        product.category = req.params.id;
 
         product.save({}, (err, Product) => {
             if(err){
