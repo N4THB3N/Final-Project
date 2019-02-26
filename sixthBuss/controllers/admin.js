@@ -96,51 +96,49 @@ function login(req, res){
 
   function dropAdmin(req, res){
     var adminId = req.params.id;  
-  
-    Admin.findOneAndDelete({ _id:adminId }, (err, adminDelete) => {
-      if(err){
-        res.status(500).send({
-          message: 'There was an error, no way to drop the record'
-        })
-      }else{
-        if(!adminDelete){
-          res.status(404).send({
-            message: 'Unable to delete the record'
-          });
+
+    if(req.des.role == 'ADMIN_ROLE'){
+      Admin.findOneAndDelete({ _id:adminId }, (err, adminDelete) => {
+        if(err){
+          res.status(500).send({
+            message: 'There was an error, no way to drop the record'
+          })
         }else{
-            if(req.des.role == 'ADMIN_ROLE'){
-                res.status(200).send({
-                    message: 'Record successfully deleted', admin: adminDelete
-                  });
-            }else{
-                res.status(500).send({
-                    message: 'You are not the owner of this account, are you?'
-                });
-            }
+          if(!adminDelete){
+            res.status(404).send({
+              message: 'Unable to delete the record'
+            });
+          }else{
+                  res.status(200).send({
+                      message: 'Record successfully deleted', admin: adminDelete
+                    });
+          }
         }
-      }
-    });
+      });
+    }else{
+      res.status(500).send({message: 'No permission to do this'});
+    }
   }
 
   function updateAdmin(req, res){
     var adminId = req.params.id;
     var update = req.body;
 
-    Admin.findByIdAndUpdate(adminId, update, {new:true}, (err, updateAdmin) =>{
-        if(err){
-            res.status(500).send({message: 'Theres no way to update the record'});
-        }else{
-            if(!updateAdmin){
-                res.status(404).send({message: 'No records to update down here'});
-            }else{
-                if(req.des.role == 'ADMIN_ROLE'){
-                    res.status(200).send({admin: updateAdmin});
-                }else{
-                    res.status(500).send({message: 'Nobody else than the user can change this record, are you a client?'})
-                }
-            }
+    if(req.des.role == 'ADMIN_ROLE'){
+      Admin.findByIdAndUpdate(adminId, update, {new:true}, (err, updateAdmin) =>{
+      if(err){
+          res.status(500).send({message: 'Theres no way to update the record'});
+      }else{
+          if(!updateAdmin){
+              res.status(404).send({message: 'No records to update down here'});
+          }else{
+                res.status(200).send({admin: updateAdmin});                
+          }
         }
-    });
+      });
+    }else{
+      res.status(500).send({message: 'Nobody else than the user can change this record, are you a client?'})
+    }
 }
 
 function adminList(req, res){

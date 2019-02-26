@@ -9,6 +9,7 @@ var app = express();
 var user_routes = require('./routes/user');
 var admin_routes = require('./routes/admin');
 var product_routes = require('./routes/product');
+var category_routes = require('/routes/category');
 
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json());
@@ -17,6 +18,7 @@ app.use(bodyParser.json());
 app.use('/v1', user_routes);
 app.use('/v1', admin_routes);
 app.use('/v1', product_routes);
+app.use('/v1', category_routes);
 
 app.use((req, res, next) => {
 	res.header('Access-Control-Allow-Origin', '*');

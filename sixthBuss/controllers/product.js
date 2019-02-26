@@ -22,6 +22,28 @@ function saveProduct(req, res){
     }
 }
 
+function updateProduct(req, res){
+    var update = req.body;
+    var updateId = req.params.id;
+
+    if(req.des.role == 'ADMIN_ROLE'){
+        Product.findByIdAndUpdate({_id: updateId}, (err, product) => {
+            if(err){
+                res.send(500).send({message: 'There was an unexpected error'});
+            }else{
+                if(!product){
+                    res.status(404).send({message: 'Unable to update the record'});
+                }else{
+                    res.status(200).send({product: product});
+                }
+            }   
+        });
+    }else{
+
+    }
+}
+
 module.exports = {
-    saveProduct
+    saveProduct,
+    updateProduct
 }
