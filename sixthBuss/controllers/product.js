@@ -1,6 +1,7 @@
 'use strict'
 
 var Product = require('../models/product');
+//////Last update of the controller
 
 function saveProduct(req, res){
     var product = new Product();
