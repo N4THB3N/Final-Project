@@ -29,61 +29,9 @@ function saveCategorie(req, res){
   }
 }
 
-function dropCategory(req, res){
-    var categorieId = req.params.id;  
-    var ver;
-
-    if(req.des.role == 'ADMIN_ROLE'){
-      Categorie.findOneAndDelete({ _id:categorieId }, (err, category) => {
-        if(err){
-          res.status(500).send({
-            message: 'There was an error, no way to drop the record'
-          })
-        }else{
-          if(!category){
-            res.status(404).send({
-              message: 'Unable to delete the record'
-            });
-          }else{
-            Product.findOne({category:categorieId}, (err, buscar) => {
-              var usable = buscar._id; 
-              if(buscar == null){
-                  res.status(200).send({
-                    message: 'Record successfully deleted', categorie: category
-                  });
-              }else{
-                Categorie.findOne({name:'Storaged stuff'}, (err, encontrarBabo) => {
-                  if(encontrarBabo == null){
-                    var category = new Categorie();
-                    category.name = 'Storaged stuff';
-              
-                    category.save({}, (err, guardar) => {
-                        var defecto = guardar._id;  
-                        Product.findOne({category:categorieId}, (err, buscar) => {
-                          var bruto = buscar._id;
-                          Product.findByIdAndUpdate(bruto, defecto, {new:true}, (err, cosa) =>{
-                              res.status(200).send({cosa});
-                          })
-                        })        
-                        
-                  });
-                }else{
-                  res.status(500).send({message: 'We have done this before'});
-                }
-                });
-              }
-          });
-            // res.status(200).send({
-            //   message: 'Record successfully deleted', categorie: category
-            // });
-          }
-        }
-      });
-    }else{
-       
-      //  res.status(500).send({message: 'Only administrator have permission to do this'});
-    }
-  }
+function dropWell(req, res){
+ 
+}
 
   function updateCategory(req, res){
     var adminId = req.params.id;
