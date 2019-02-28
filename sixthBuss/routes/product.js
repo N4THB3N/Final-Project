@@ -6,7 +6,9 @@ var md_auth = require('../middlewares/authenticated');
 
 var api = express.Router();
 
-api.post('/saveProduct', ProductController.saveProduct);
-api.put('/updateProduct', md_auth.ensureAut, ProductController.updateProduct);
+api.post('/saveProduct/:id', md_auth.ensureAut, ProductController.saveProduct);
+api.put('/updateProduct/:id', md_auth.ensureAut, ProductController.updateProduct);
+api.put('/dropProduct/:id', md_auth.ensureAut, ProductController.dropProduct);
+api.get('/listProduct', md_auth.ensureAut, ProductController.ProductList);
 
 module.exports = api;

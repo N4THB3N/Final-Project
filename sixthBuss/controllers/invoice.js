@@ -1,23 +1,25 @@
 'use strict'
 
-var Categorie = require('../models/categorie');
+var Invoice = require('../models/invoice');
 
-function saveCategorie(req, res){
-    var categorie = new Categorie();
+function saveInvoice(req, res){
+    var invoice = new Invoice();
     var params = req.body;
 
     if(req.des.role == 'ROLE_ADMIN'){
-      if(params.name){
-        categorie.name = params.name;
+      if(params.stock, params.price){
+        invoice.stock = params.stock;
+        invoice.price = params.price;
+        invoice.product = req.params.id;
 
-        Categorie.save((err, categorie) =>{
+        Invoice.save((err, invoice) =>{
             if(err){
                 res.status(500).send({message: 'Unable to add a record on this collection'});
             }else{
-                if(!categorie){
+                if(!invoice){
                     res.status(500).send({message: 'Unfortunate and sudden error just happened'});
                 }else{
-                    res.status(500).send({categorie: categorie});
+                    res.status(500).send({invoice: invoice});
                 }
             }
         });
@@ -29,23 +31,23 @@ function saveCategorie(req, res){
   }
 }
 
-function dropAdmin(req, res){
-    var categorieId = req.params.id;  
+function dropInvoice(req, res){
+    var invoiceId = req.params.id;  
 
     if(req.des.role == 'ROLE_ADMIN'){
-      Categorie.findOneAndDelete({ _id:categorieId }, (err, category) => {
+      Invoice.findOneAndDelete({ _id:invoiceId }, (err, invoice) => {
         if(err){
           res.status(500).send({
             message: 'There was an error, no way to drop the record'
           })
         }else{
-          if(!category){
+          if(!invoice){
             res.status(404).send({
               message: 'Unable to delete the record'
             });
           }else{
             res.status(200).send({
-              message: 'Record successfully deleted', categorie: category
+              message: 'Record successfully deleted', invoice: invoice
             });
           }
         }
@@ -55,24 +57,24 @@ function dropAdmin(req, res){
     }
   }
 
-  function updateAdmin(req, res){
-    var adminId = req.params.id;
+  function updateInvoice(req, res){
+    var invoiceId = req.params.id;
     var update = req.body;
 
     if(req.des.role == 'ROLE_ADMIN'){
-      Categorie.findByIdAndUpdate(adminId, update, {new: true}, (err, admin) => {
+      Invoice.findByIdAndUpdate(invoiceId, update, {new: true}, (err, invoice) => {
         if(err){
           res.status(500).send({
             message: 'There was an error while updating the teacher'
           });
         }else{
-          if(!admin){
+          if(!invoice){
             res.status(404).send({
               message: 'Unable to update the record from admin collection'
             });
           }else{
             res.status(200).send({
-              categorie: admin
+              invoice: invoice
             });
           }
         }
@@ -82,15 +84,15 @@ function dropAdmin(req, res){
     }
   }
 
-  function listCategory(req, res){
+  function listInvoice(req, res){
     if(req.see.role == 'ROLE_ADMIN'){
-      Categorie.find({}, (err, categorieList) => {
+      Invoice.find({}, (err, invoiceList) => {
         if(err){
             console.log(err);
             res.status(500).send({message: 'No way to make a list'});
         }else{
             res.status(500).send({
-                message:'Welcome administrator check out the list of students carefully', categorie: categorieList
+                message:'Welcome administrator check out the list of students carefully', invoice:invoiceList
             });
         }
     });
@@ -101,8 +103,8 @@ function dropAdmin(req, res){
 
 
 module.exports = {
-    listCategory,
-    saveCategorie,
-    updateAdmin,
-    dropAdmin
+    listInvoice,
+    saveInvoice,
+    dropInvoice,
+    updateInvoice
 }
