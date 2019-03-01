@@ -67,14 +67,14 @@ function updateUser(req, res){
 }
 
 function userList(req, res){
-    User.find({}, (err, admin) =>{
+    User.find({}, (err, user) =>{
       if(err){
         console.log(err);
         res.status(500).send({
           message: 'We couldnt realise this pettition'
         });
       }else{
-        res.status(200).send({admin});
+        res.status(200).send({user});
       }
     });
   }

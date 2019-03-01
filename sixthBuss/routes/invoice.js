@@ -9,5 +9,6 @@ api.post('/saveInvoice/:id', md_auth.ensureAut, InvoiceController.saveInvoice);
 api.put('/updateInvoice/:id', md_auth.ensureAut, InvoiceController.updateInvoice);
 api.put('/dropInvoice', md_auth.ensureAut, InvoiceController.dropInvoice);
 api.get('/listInvoice', md_auth.ensureAut, InvoiceController.listInvoice);
+api.get('/listById', md_auth.ensureAut, InvoiceController.listByUser);
 
 module.exports = api;
