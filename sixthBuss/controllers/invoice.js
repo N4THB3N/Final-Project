@@ -1,28 +1,39 @@
 'use strict'
 
 var Invoice = require('../models/invoice');
+var Product = require('../models/product');
 
 function saveInvoice(req, res){
     var invoice = new Invoice();
     var params = req.body;
 
-    if(req.des.role == 'ROLE_ADMIN'){
+    if(req.des.role == 'ADMIN_ROLE'){
       if(params.stock, params.price){
         invoice.stock = params.stock;
         invoice.price = params.price;
         invoice.product = req.params.id;
 
-        Invoice.save((err, invoice) =>{
+        Product.findOne({_id:invoice.product}, (err, updateThis) => {
+          invoice.save((err, invoice) =>{
             if(err){
                 res.status(500).send({message: 'Unable to add a record on this collection'});
             }else{
                 if(!invoice){
                     res.status(500).send({message: 'Unfortunate and sudden error just happened'});
                 }else{
+                    var stockInvoice = invoice.stock;
+                    var stockProduct = updateThis.stock;
+                    var stockFinal = stockProduct-stockInvoice;
+                    var idProduct = updateThis._id;
+
+                    Product.findByIdAndUpdate(idProduct, stockFinal, {new:true}, (err, updateProduct) =>{
+                    });
+
                     res.status(500).send({invoice: invoice});
                 }
             }
         });
+      });
     }else{
         res.status(404).send({message: 'Some fields are required'});
     }
@@ -85,14 +96,14 @@ function dropInvoice(req, res){
   }
 
   function listInvoice(req, res){
-    if(req.see.role == 'ROLE_ADMIN'){
+    if(req.des.role == 'ADMIN_ROLE'){
       Invoice.find({}, (err, invoiceList) => {
         if(err){
             console.log(err);
             res.status(500).send({message: 'No way to make a list'});
         }else{
             res.status(500).send({
-                message:'Welcome administrator check out the list of students carefully', invoice:invoiceList
+                message:'Welcome administrator', invoice:invoiceList
             });
         }
     });

@@ -30,30 +30,35 @@ function saveCategorie(req, res){
 }
 
 function dropWell(req, res){
-  var categorieId = req.params.id;
+  var categorieId = req.params.id;         
+  var categorie = new Categorie();
+  var nombre = 'Storaged stuff';
+  categorie.name = nombre;
 
     Product.find({category:categorieId}, (err, findProduct) =>{
-      if(!findProduct){
-        Categorie.findOneAndDelete({_id:categorieId}, (err, eliminar) =>{
+      if(err){
+        res.status(500).send({message: 'Theres an error'});
+      }else{
+        if(findProduct){
+          Categorie.findOne({name: 'Default'}, (err, categorieSi) => {
+              var storageId = categorieSi._id;
+
+              Product.updateMany({category: categorieId}, { category: storageId }, (err, updateds)=>{
+                if(err){
+                  res.status(500).send({message: 'There was an error'});
+                }else{
+                  Categorie.findOneAndDelete({_id:categorieId}, (err, dropThis) =>{
+                    res.status(200).send({message: 'Successfully deleted', dropThis});
+                  });
+                }
+              });
+          });
+        
+        }else{
+          Categorie.findOneAndDelete({_id:categorieId}, (err, eliminar) =>{
             res.status(200).send({message: 'Successfully deleted', eliminar});
         });
-      }else{
-        var categorie = new Categorie();
-        var nombre = 'Storaged stuff';
-        categorie.name = nombre;
-        
-        categorie.save((err, saveNew) =>{
-          var storageId = categorie._id;
-            Product.updateMany({category: categorieId}, { category: storageId }, (err, updateds)=>{
-              if(err){
-                res.status(500).send({message: 'There was an error'});
-              }else{
-                Categorie.findOneAndDelete({_id:categorieId}, (err, dropThis) =>{
-                  res.status(200).send({message: 'Successfully deleted', dropThis});
-                });
-              }
-            });
-        });
+        }
       }  
     });
 }
