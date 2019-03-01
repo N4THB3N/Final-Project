@@ -30,7 +30,32 @@ function saveCategorie(req, res){
 }
 
 function dropWell(req, res){
- 
+  var categorieId = req.params.id;
+
+    Product.find({category:categorieId}, (err, findProduct) =>{
+      if(!findProduct){
+        Categorie.findOneAndDelete({_id:categorieId}, (err, eliminar) =>{
+            res.status(200).send({message: 'Successfully deleted', eliminar});
+        });
+      }else{
+        var categorie = new Categorie();
+        var nombre = 'Storaged stuff';
+        categorie.name = nombre;
+        
+        categorie.save((err, saveNew) =>{
+          var storageId = categorie._id;
+            Product.updateMany({category: categorieId}, { category: storageId }, (err, updateds)=>{
+              if(err){
+                res.status(500).send({message: 'There was an error'});
+              }else{
+                Categorie.findOneAndDelete({_id:categorieId}, (err, dropThis) =>{
+                  res.status(200).send({message: 'Successfully deleted', dropThis});
+                });
+              }
+            });
+        });
+      }  
+    });
 }
 
   function updateCategory(req, res){
@@ -60,21 +85,16 @@ function dropWell(req, res){
     }
   }
 
-  function listCategory(req, res){
-    if(req.des.role == 'ADMIN_ROLE'){
-      Categorie.find({}, (err, categorieList) => {
-        if(err){
-            console.log(err);
-            res.status(500).send({message: 'No way to make a list'});
-        }else{
-            res.status(500).send({
-                message:'Welcome administrator check out the list of students carefully', categorie: categorieList
-            });
-        }
-    });
-    }else{
-      res.status(500).send({message: 'Just administrator'});
-    }
+  function listCategory(req,res){
+    Categorie.find({}, (err, categories) => {
+      if(err){
+        console.log(err);
+        res.status(500).send({message: 'Esta cosa no se pudo'})
+      }else{
+        res.status(200).send({categories});
+      }
+    })
+
   }
 
   function neee(req, res){
@@ -89,6 +109,6 @@ module.exports = {
     listCategory,
     saveCategorie,
     updateCategory,
-    dropCategory,
-    neee
+    neee,
+    dropWell
 }

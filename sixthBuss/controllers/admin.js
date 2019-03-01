@@ -86,6 +86,8 @@ function login(req, res){
                     }
                   }
                 })
+              }else{
+                res.status(404).send({message: 'No user found'});
               }
             }
           });
