@@ -1,6 +1,7 @@
 'use strict'
 
 var Product = require('../models/product');
+var Category = require('../models/category');
 //////Last update of the controller
 
 function saveProduct(req, res){
@@ -96,9 +97,57 @@ function ProductList(req, res){
   });
 }
 
+function seekByName(req, res){
+  var params = req.body;
+  var name = params.name;
+
+  Product.find({name:name}, (err, findProduct) => {
+    if(err){
+      res.status(500).send({message: 'Just error'});
+    }else{
+      if(!findProduct){
+        res.status(404).send({
+          message: 'Theres no record found'
+        });
+      }else{
+        res.status(200).send({
+          findProduct
+        });
+      }
+    }
+  });
+}
+
+function seekByCategory(req, res){
+  var params = req.body;
+  var category = params.category;
+
+  Category.find({name: category}, (err, issetCategory) => {
+    var id = issetCategory._id;
+
+    Product.find({_id:id}, (err, issetProduct) => {
+        if(err){
+          res.status(500).send({
+            message: 'There is an error'
+          });
+        }else{
+          if(!issetProduct){
+            res.status(404).send({message: 'No record inside the collection'});
+          }else{
+            res.status(200).send({
+              issetProduct
+            });
+          }
+        }
+    });
+  });
+}
+
 module.exports = {
     saveProduct,
     updateProduct,
     ProductList,
     dropProduct,
+    seekByName,
+    seekByCategory
 }

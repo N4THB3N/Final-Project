@@ -2,6 +2,7 @@
 
 var Invoice = require('../models/invoice');
 var Product = require('../models/product');
+var cont = 0;
 
 function saveInvoice(req, res){
     var invoice = new Invoice();
@@ -11,6 +12,8 @@ function saveInvoice(req, res){
       if(params.stock, params.price){
         invoice.stock = params.stock;
         invoice.price = params.price;
+        cont ++;
+        invoice.cont = cont;
         invoice.product = req.params.id;
         invoice.user = req.des.sub;
 
@@ -142,11 +145,32 @@ function dropInvoice(req, res){
     }
   }
 
+  function soldMost(req, res){
+    if(req.des.role == 'CLIENT_ROLE'){
+      Invoice.find({cont:{$gte: 7}}, (err, findInvoices) => {
+        if(err){
+          res.status(500).send({message: 'Unexpected error'});
+        }else{
+          if(!findInvoices){
+            res.status(404).send({message: 'Were sorry, but none of our products have been saled enough!'});
+          }else{
+            res.status(200).send({findInvoices});
+          }
+        }
+    });
+    }else{
+      res.status(500).send({
+        message: 'This querie has been thought for clients not administrators, so please go back and get a different kind of account'
+      })
+    }
+  }
+
 
 module.exports = {
     listInvoice,
     saveInvoice,
     dropInvoice,
     updateInvoice,
-    listByUser
+    listByUser,
+    soldMost
 }

@@ -2,6 +2,7 @@
 
 var Admin = require('../models/admin');
 var User = require('../models/user');
+var Invoice = require('../models/invoice');
 var jwt = require('../services/jwt');
 var bcrypt = require('bcrypt-nodejs');
 
@@ -64,6 +65,8 @@ function login(req, res){
                 res.status(200).send({
                   token: jwt.createToken(admin), message: 'Welcome dear Administrator!'
                 });
+              }else{
+                res.status(200).send({message: 'Well, welcome...'});
               }
             }else{
               res.status(404).send({
@@ -82,7 +85,20 @@ function login(req, res){
                     if(params.gettoken){
                       res.status(200).send({token: jwt.tokenCreated(user), message: 'Welcome dear client!'});
                     }else{
-                      res.status(404).send({message: 'There cannot log-in this application'});
+                      User.find({}, (err, listFind) => {
+                        Invoice.find({user: listFind._id}, (err, listInvoices) => {
+                          if(err){
+                            res.status(404).send({message:'Nothing found over here'});
+                          }else{
+                            if(!listInvoices){
+                              res.status(404).send({message:'Record(s) not found'});
+                            }else{
+                              res.status(200).send({listInvoices});
+                            }
+                          }
+                        });
+                      });
+      
                     }
                   }
                 })
