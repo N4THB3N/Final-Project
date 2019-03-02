@@ -13,4 +13,5 @@ api.get('/listProduct', md_auth.ensureAut, ProductController.ProductList);
 api.get('/seekByName', md_auth.ensureAut, ProductController.seekByName);
 api.get('/listByCategory', md_auth.ensureAut, ProductController.seekByCategory);
 
+
 module.exports = api;

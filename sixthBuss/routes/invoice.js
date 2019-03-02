@@ -11,5 +11,6 @@ api.put('/dropInvoice', md_auth.ensureAut, InvoiceController.dropInvoice);
 api.get('/listInvoice', md_auth.ensureAut, InvoiceController.listInvoice);
 api.get('/listById', md_auth.ensureAut, InvoiceController.listByUser);
 api.get('/soldMost', md_auth.ensureAut, InvoiceController.soldMost);
+api.post('/cart', InvoiceController.addCart);
 
 module.exports = api;

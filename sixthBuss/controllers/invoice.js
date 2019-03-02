@@ -165,6 +165,16 @@ function dropInvoice(req, res){
     }
   }
 
+  function addCart(req, res){
+    var params = req.body;
+    var nombre = params.cosa;
+
+    Invoice.find({}, (err, cosa) => {
+      cosa.cart.push(nombre);
+      cosa.save();
+    });
+  }
+
 
 module.exports = {
     listInvoice,
@@ -172,5 +182,6 @@ module.exports = {
     dropInvoice,
     updateInvoice,
     listByUser,
-    soldMost
+    soldMost,
+    addCart
 }

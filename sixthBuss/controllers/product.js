@@ -149,5 +149,5 @@ module.exports = {
     ProductList,
     dropProduct,
     seekByName,
-    seekByCategory
+    seekByCategory,
 }
