@@ -166,12 +166,11 @@ function dropInvoice(req, res){
   }
 
   function addCart(req, res){
+    var id = req.params.id;
     var params = req.body;
-    var nombre = params.cosa;
 
-    Invoice.find({}, (err, cosa) => {
-      cosa.cart.push(nombre);
-      cosa.save();
+    Invoice.findByIdAndUpdate(id, {cart:params}, {new:true}, (err, UpdateInvoice) => {
+      res.status(200).send({UpdateInvoice});
     });
   }
 
