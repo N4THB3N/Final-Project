@@ -10,6 +10,6 @@ api.post('/saveUser', UserController.SaveUser);
 api.get('/listUser', UserController.userList);
 api.put('/updateUser/:id', md_auth.ensureAut, UserController.updateUser);
 api.put('/dropUser/:id', md_auth.ensureAut, UserController.dropClient);
-api.put('/cart/:id', InvoiceController.addCart);
+api.put('/newCart/:id', UserController.addCart);
 
 module.exports = api;

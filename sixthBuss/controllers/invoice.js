@@ -2,77 +2,56 @@
 
 var Invoice = require('../models/invoice');
 var Product = require('../models/product');
+var User = require('../models/user');
 var cont = 0;
 
 function saveInvoice(req, res){
-    var invoice = new Invoice();
-    var params = req.body;
+  var esto = 0;
+  var idPro; 
+  var description;
 
-    if(req.des.role == 'CLIENT_ROLE'){
-      if(params.stock, params.price){
-        invoice.stock = params.stock;
-        invoice.price = params.price;
-        cont ++;
-        invoice.cont = cont;
-        invoice.product = req.params.id;
-        invoice.user = req.des.sub;
+  req.des.cart.forEach((product) => {    
+    esto = esto + parseInt(product.number);
+    idPro = product.product;
+    description = product.number;
+    Product.findByIdAndUpdate(idPro, {$inc:{stock: -description}}, {new:true}, (err, Updating) =>{
+      console.log(Updating);
+    });
+  });
 
-        var id = req.params.id;
-
-        Product.findOne({_id:invoice.product}, (err, product) =>{
-          if(product.stock >= invoice.stock){
-
-            var stockFinal = product.stock - invoice.stock;
-                        
-            Product.findByIdAndUpdate(id, {stock:stockFinal}, {new: true}, (err, invoiceSi) => {
-              if(err){
-                res.status(500).send({
-                  message: 'There was an error while updating the teacher'
-                });
-              }else{
-                if(!invoiceSi){
-                  res.status(404).send({
-                    message: 'Unable to update the record from admin collection'
-                  });
-                }else{
-                  invoice.save((err, invoice) =>{
-                    if(err){
-                      res.status(500).send({message:'There is an unexpected error'});
-                    }else{
-                      if(!invoice){
-                        res.status(404).send({message:'Error'});
-                      }else{
-                        res.status(200).send({invoice, invoiceSi});
-                      }
-                    }
-                  });      
-                }
-              }
-            });
-          }else if(product.stock < invoice.stock){
-              res.status(500).send({message: 'No enough product storaged for you!'})
-          }
-        });
+  var invoice = new Invoice();
+  invoice.stock = esto;
+  invoice.price = req.body.price;
+  cont ++;
+  invoice.cont = cont;
+  invoice.user = req.des.sub;
+  invoice.save((err, thisSave) =>{
+    if(err){
+      res.status(500).send({message: 'Error'})
     }else{
-        res.status(404).send({message: 'Some fields are required'});
+      res.status(200).send({thisSave});
     }
-  }else{
-    res.status(500).send({message: 'Only administrator is able to perform this'});
-  }
+  });
+
 }
 
 function listByUser(req, res){
-  Invoice.find({user:req.des.sub}, (err, invoiceUser) => {
-    if(err){
-      res.status(500).send({message:'Error'});
-    }else{
-      if(!invoiceUser){
-        res.status(404).send({message: 'No way to display a list'})
+  if(req.des.role == 'CLIENT_ROLE'){
+    Invoice.find({user:req.des.sub}, (err, invoiceUser) => {
+      if(err){
+        res.status(500).send({message:'Error'});
       }else{
-        res.status(200).send({invoiceUser});
+        if(!invoiceUser){
+          res.status(404).send({message: 'No way to display a list'})
+        }else{
+          res.status(200).send({invoiceUser});
+        }
       }
-    }
-  });
+    });
+  }else{
+    res.status(200).send({message: 'Youve got to be a user, not administrator'})
+  }
+
 }
 
 function dropInvoice(req, res){

@@ -108,12 +108,18 @@ function userList(req, res){
   }
   
     function addCart(req, res){
-    var id = req.params.id;
-    var params = req.body;
+      var id = req.params.id;
+      var params = req.body;
+      var product = { product: req.body.product, number: req.body.number };
+      // { product: '12313123', number: 12 }
 
-    Invoice.findByIdAndUpdate(id, {cart:params}, {new:true}, (err, UpdateInvoice) => {
-      res.status(200).send({UpdateInvoice});
-    });
+      User.findById(id, (err, UpdateUser) => {
+        UpdateUser.cart.push(product);
+        UpdateUser.save().then((productSaved) => {
+          res.status(200).send({productSaved});
+        }).catch((err) => res.status(500).send({ err }));
+        
+      });
   }
 
 
@@ -122,5 +128,5 @@ module.exports = {
     updateUser,
     userList,
     dropClient,
-	addCart
+	  addCart
 }

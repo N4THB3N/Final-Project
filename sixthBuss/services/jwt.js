@@ -26,6 +26,7 @@ exports.tokenCreated = function(user){
         email: user.email,
         password: user.password,
         role: user.role,
+        cart: user.cart,
         iat: moment().unix(),
         exp: moment().add(30, 'days').unix
     };

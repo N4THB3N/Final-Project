@@ -35,32 +35,36 @@ function dropWell(req, res){
   var nombre = 'Storaged stuff';
   categorie.name = nombre;
 
-    Product.find({category:categorieId}, (err, findProduct) =>{
-      if(err){
-        res.status(500).send({message: 'Theres an error'});
-      }else{
-        if(findProduct){
-          Categorie.findOne({name: 'Default'}, (err, categorieSi) => {
-              var storageId = categorieSi._id;
-
-              Product.updateMany({category: categorieId}, { category: storageId }, (err, updateds)=>{
-                if(err){
-                  res.status(500).send({message: 'There was an error'});
-                }else{
-                  Categorie.findOneAndDelete({_id:categorieId}, (err, dropThis) =>{
-                    res.status(200).send({message: 'Successfully deleted', dropThis});
-                  });
-                }
-              });
-          });
-        
+    if(req.des.role == 'ADMIN_ROLE'){
+      Product.find({category:categorieId}, (err, findProduct) =>{
+        if(err){
+          res.status(500).send({message: 'Theres an error'});
         }else{
-          Categorie.findOneAndDelete({_id:categorieId}, (err, eliminar) =>{
-            res.status(200).send({message: 'Successfully deleted', eliminar});
-        });
-        }
-      }  
-    });
+          if(findProduct){
+            Categorie.findOne({name: 'Default'}, (err, categorieSi) => {
+                var storageId = categorieSi._id;
+  
+                Product.updateMany({category: categorieId}, { category: storageId }, (err, updateds)=>{
+                  if(err){
+                    res.status(500).send({message: 'There was an error'});
+                  }else{
+                    Categorie.findOneAndDelete({_id:categorieId}, (err, dropThis) =>{
+                      res.status(200).send({message: 'Successfully deleted', dropThis});
+                    });
+                  }
+                });
+            });
+          
+          }else{
+            Categorie.findOneAndDelete({_id:categorieId}, (err, eliminar) =>{
+              res.status(200).send({message: 'Okay, we dropped the category!', eliminar});
+          });
+          }
+        }  
+      });
+    }else{
+      res.status(404).send({message: 'Incorrect user!'})
+    }
 }
 
   function updateCategory(req, res){
