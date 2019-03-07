@@ -59,7 +59,7 @@ function listByUser(req, res){
 function dropInvoice(req, res){
     var invoiceId = req.params.id;  
 
-    if(req.des.role == 'ROLE_ADMIN'){
+    if(req.des.role == 'ADMIN_ROLE'){
       Invoice.findOneAndDelete({ _id:invoiceId }, (err, invoice) => {
         if(err){
           res.status(500).send({
@@ -86,7 +86,7 @@ function dropInvoice(req, res){
     var invoiceId = req.params.id;
     var update = req.body;
 
-    if(req.des.role == 'ROLE_ADMIN'){
+    if(req.des.role == 'ADMIN_ROLE'){
       Invoice.findByIdAndUpdate(invoiceId, update, {new: true}, (err, invoice) => {
         if(err){
           res.status(500).send({

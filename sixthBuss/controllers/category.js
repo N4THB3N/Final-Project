@@ -106,18 +106,27 @@ function dropWell(req, res){
 
   }
 
-  function neee(req, res){
-    Categorie.findOne({name: 'Perros y gatos'}, (err, be) =>{
-      if(be == null){
-        res.status(500).send({message: 'Voila'});
+  function listByCategory(req,res){
+    var params = req.body;
+    var ple = params.name;
+
+    Categorie.findOne({name: ple}, (err, listCategory) => {
+      if(err){
+        res.status(500).send({message: 'There an error doing while doing this'})
+      }else{
+        if(!listCategory){
+          res.status(500).send({message: 'No category found'});
+        }else{
+          res.status(200).send({listCategory});
+        }
       }
-    })
+    });
   }
 
 module.exports = {
     listCategory,
     saveCategorie,
     updateCategory,
-    neee,
-    dropWell
+    dropWell,
+    listByCategory
 }
