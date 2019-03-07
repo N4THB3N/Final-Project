@@ -85,20 +85,9 @@ function login(req, res){
                     if(params.gettoken){
                       res.status(200).send({token: jwt.tokenCreated(user), message: 'Welcome dear client!'});
                     }else{
-                      User.find({}, (err, listFind) => {
-                        Invoice.find({user: listFind._id}, (err, listInvoices) => {
-                          if(err){
-                            res.status(404).send({message:'Nothing found over here'});
-                          }else{
-                            if(!listInvoices){
-                              res.status(404).send({message:'Record(s) not found'});
-                            }else{
-                              res.status(200).send({listInvoices});
-                            }
-                          }
-                        });
+                      User.find({email: params.email}, (err, thisUser) => {
+                        res.status(200).send({thisUser});
                       });
-      
                     }
                   }
                 })

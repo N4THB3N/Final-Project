@@ -128,7 +128,7 @@ function dropInvoice(req, res){
 
   function soldMost(req, res){
     if(req.des.role == 'CLIENT_ROLE'){
-      Product.find({cont:{$gte: 7}}, (err, findInvoices) => {
+      Product.find({cont:{$gte: 4}}, (err, findInvoices) => {
         if(err){
           res.status(500).send({message: 'Unexpected error'});
         }else{
