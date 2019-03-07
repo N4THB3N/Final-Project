@@ -2,7 +2,6 @@
 
 var Invoice = require('../models/invoice');
 var Product = require('../models/product');
-var User = require('../models/user');
 var cont = 0;
 
 function saveInvoice(req, res){
@@ -14,16 +13,19 @@ function saveInvoice(req, res){
     esto = esto + parseInt(product.number);
     idPro = product.product;
     description = product.number;
+    cont ++;
     Product.findByIdAndUpdate(idPro, {$inc:{stock: -description}}, {new:true}, (err, Updating) =>{
       console.log(Updating);
+    });
+
+    Product.findByIdAndUpdate(idPro, {cont:cont}, {new:true}, (err, doThis)=>{
+      console.log(doThis);
     });
   });
 
   var invoice = new Invoice();
   invoice.stock = esto;
   invoice.price = req.body.price;
-  cont ++;
-  invoice.cont = cont;
   invoice.user = req.des.sub;
   invoice.save((err, thisSave) =>{
     if(err){
@@ -126,7 +128,7 @@ function dropInvoice(req, res){
 
   function soldMost(req, res){
     if(req.des.role == 'CLIENT_ROLE'){
-      Invoice.find({cont:{$gte: 7}}, (err, findInvoices) => {
+      Product.find({cont:{$gte: 7}}, (err, findInvoices) => {
         if(err){
           res.status(500).send({message: 'Unexpected error'});
         }else{

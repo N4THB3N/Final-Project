@@ -7,6 +7,7 @@ var ProductSchema = Schema({
     name: String,
     stock: Number,
     price: Number,
+    cont: Number,
     category: {type: Schema.ObjectId, ref: 'Category'},
 });
 
