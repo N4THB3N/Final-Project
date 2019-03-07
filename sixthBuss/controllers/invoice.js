@@ -165,15 +165,6 @@ function dropInvoice(req, res){
     }
   }
 
-  function addCart(req, res){
-    var id = req.params.id;
-    var params = req.body;
-
-    Invoice.findByIdAndUpdate(id, {cart:params}, {new:true}, (err, UpdateInvoice) => {
-      res.status(200).send({UpdateInvoice});
-    });
-  }
-
 
 module.exports = {
     listInvoice,
@@ -181,6 +172,5 @@ module.exports = {
     dropInvoice,
     updateInvoice,
     listByUser,
-    soldMost,
-    addCart
+    soldMost
 }
